@@ -9,13 +9,22 @@
     (например, невозможность полета дрона на дальность более чем на 1000 км). Методы и введенные ограничения описать в 
     комментариях. */
 
-using intefaces_pract;
+using Intefaces_Pract;
 
 Airplane plane = new(0, 0);
 //plane.FlyTo(1, 1, 1);
 double tm = plane.GetFlyTime(1000, 0);
-Bird eagle = new();
+Bird eagle = new(11, 3, 0.5);
+Bird brd1 = new(0, 0, 0);
+Bird brd2 = new(0, 0, 0);
 Drone heli = new(5, 7, 13);
+
+Coordinate Coord_eagle = new Coordinate();
+Coordinate obj1 = new();
+Coordinate obj2 = new();
+obj1.Print(); obj2.Print();
+
+
 
 
 

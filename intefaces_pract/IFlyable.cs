@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-//FlyTo(новая точка), GetFlyTime(новая точка)
+﻿//FlyTo(новая точка), GetFlyTime(новая точка)
 
-namespace intefaces_pract
+namespace Intefaces_Pract
 {
     public interface IFlyable
     {
@@ -13,11 +8,15 @@ namespace intefaces_pract
         {
 
         }
+
+
         void GetFlyTime(int x, int y, int z)
         {
 
         }
-        void IGetHeight (double time0, double time1)
+
+
+        void IGetHeight(double time0, double time1)
         {
 
         }
