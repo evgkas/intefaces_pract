@@ -2,55 +2,65 @@
 {
     internal class Drone : IFlyable
     {
-        public double x0; public double y0; public double z0;
-        public static double speed = 120; //km/h
-        static double maxdistance = 1000; //km
-        static double maxheight = 2;
-        static double flytime = 9 / 10; //9 min out of 10 drone flying, 1 min hold in the air
+        public Coordinate currentCoordinate;
+        public static double speed = 120;   //km/h
+        public static double maxDistance = 1000;  //km
+        public static double maxHeight = 2;
 
-
-        public Drone(double x0, double y0, double z0)
+        public Drone(Coordinate initialCoordinate)
         {
-            this.x0 = x0;
-            this.y0 = y0;
-            this.z0 = z0;
-            Console.WriteLine($"Drone created at {x0}, {y0}, {z0}");
+            currentCoordinate = initialCoordinate;
+            Console.WriteLine($"Drone created at {currentCoordinate.x}, {currentCoordinate.y}, {currentCoordinate.z}");
         }
 
-
-        public void FlyTo(double x, double y, double z)
+        public Coordinate FlyTo(Coordinate newCoordinate)   //added restriction: drone can't fly above 2km
         {
-            double distance = Math.Sqrt(Math.Pow((x - x0), 2) + Math.Pow((y - y0), 2));
-            if (distance > maxdistance || z > maxheight)
+            double distance = GetDistanceTo(newCoordinate);
+            if ((distance > maxDistance) || (newCoordinate.z > maxHeight))
             {
-                Console.WriteLine($"Drone cant fly to this point: distance above {maxdistance}km or height above " +
-                    $"{maxheight}km");
+                Console.WriteLine($"Error: drone can't fly on distance > {maxDistance} km and on height > {maxHeight} km");
             }
             else
             {
-                x0 = x;
-                y0 = y;
-                z0 = z;
-                Console.WriteLine($"Drone flying to {x0}, {y0}, {z0}");
+                currentCoordinate = newCoordinate;
+                Console.WriteLine($"Drone flying to {currentCoordinate.x}, {currentCoordinate.y}, {currentCoordinate.z}");
             }
+            return currentCoordinate;
         }
 
-
-        public double GetFlyTime(double x, double y)
+        public double GetFlyTime(Coordinate newCoordinate)
         {
-            double distance = Math.Sqrt(Math.Pow((x - x0), 2) + Math.Pow((y - y0), 2));
-            if (distance > maxdistance)
+            double distance = GetDistanceTo(newCoordinate);
+            if (distance > maxDistance)
             {
-                Console.WriteLine($"Maximum distance = {maxdistance} km (now {distance})");
+                Console.WriteLine($"Error: Maximum distance = {maxDistance} km (now {distance})");
+                return 0;
+            }
+            else if (newCoordinate.z > 2)
+            {
+                Console.WriteLine($"Error: Maximim height = {maxHeight} km (now {newCoordinate.z}");
                 return 0;
             }
             else
             {
-                double time = distance / speed;
-                double holdtime = time / flytime;
-                double wholetime = time + holdtime;
-                return wholetime;
+                double flyTime = 60 * (distance / speed);   //min
+                int holdTime = (int)flyTime / 10;    //min
+                double totalTime = (flyTime + holdTime) / 60;   //hours
+                return totalTime;
             }
+        }
+
+        private double GetDistanceTo(Coordinate newCoordinate)     //calculating distance from initialCoordinate
+        {
+            double distance = Math.Sqrt(Math.Pow((newCoordinate.x - currentCoordinate.x), 2) +
+                Math.Pow((newCoordinate.y - currentCoordinate.y), 2));  //km
+            return distance;
+        }
+
+        public void Print()
+        {
+            Console.WriteLine($"Drone current coordinate: {currentCoordinate.x}, {currentCoordinate.y}, " +
+                $"{currentCoordinate.z}");
         }
     }
 }

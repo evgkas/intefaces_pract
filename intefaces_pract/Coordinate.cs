@@ -2,49 +2,47 @@
 {
     public struct Coordinate
     {
-        public double x { get; set; } = 0;
-        public double y { get; set; } = 0;
-        public double z { get; set; } = 0;
-        public string name = "Undefined";
-
-
-        public Coordinate()
+        public double x = 0;
+        public double y = 0;
+        public double z = 0;
+        public Coordinate() { }
+        public Coordinate(double x, double y)
         {
-
+            try
+            {
+                this.x = x;
+                this.y = y;
+                if ((x < 0) || (y < 0))
+                {
+                    throw new InitializationException("Coordinates must be positive. Coordinates set 0, 0, 0");
+                }
+            }
+            catch (InitializationException) { }
         }
-
-
-        public Coordinate(string name, double x, double y)
-        {
-            this.x = x;
-            this.y = y;
-            if (String.IsNullOrEmpty(name)) this.name = "Undefined";
-            else this.name = name;
-        }
-
-
-        public Coordinate(string name, double x, double y, double z)
-        {
-            this.x = x;
-            this.y = y;
-            this.z = z;
-            if (String.IsNullOrEmpty(name)) this.name = "Undefined";
-            else this.name = name;
-        }
-
-
         public Coordinate(double x, double y, double z)
         {
-            this.x = x;
-            this.y = y;
-            this.z = z;
+            try
+            {
+                if ((x < 0) || (y < 0) || (z < 0))
+                {
+                    throw new InitializationException("Coordinates must be positive. Coordinates set 0, 0, 0");
+                }
+                this.x = x;
+                this.y = y;
+                this.z = z;
+            }
+            catch (InitializationException) { }
         }
-
 
         public void Print()
         {
-            Console.WriteLine($"Object {name}  x: {x}, y: {y}, z: {z}");
+            Console.WriteLine($"Object coordinates: x = {x}, y = {y}, z = {z}");
         }
 
+        public override string ToString()
+        {
+            string coordinates = $"{x}, {y}, {z}";
+            return coordinates;
+        }
     }
 }

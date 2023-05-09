@@ -1,24 +1,9 @@
-﻿//FlyTo(новая точка), GetFlyTime(новая точка)
-
-namespace Intefaces_Pract
+﻿namespace Intefaces_Pract
 {
     public interface IFlyable
     {
-        void Flyto(int x, int y, int z)
-        {
+        public Coordinate FlyTo(Coordinate newCoordinate);
 
-        }
-
-
-        void GetFlyTime(int x, int y, int z)
-        {
-
-        }
-
-
-        void IGetHeight(double time0, double time1)
-        {
-
-        }
+        public double GetFlyTime(Coordinate newCoordinate);
     }
 }

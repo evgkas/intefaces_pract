@@ -1,119 +1,84 @@
-﻿//самолет увеличивает скорость на 10 км/ч каждые 10 км полета от начальной скорости 200 км/ч.,
-//need to make exceptions for negative coordinates
-
-namespace Intefaces_Pract
+﻿namespace Intefaces_Pract
 {
     public class Airplane : IFlyable
     {
-        static int speed0 = 200;    //initial speed
-        static int maxspeed = 1000;
-        public double x0 = 0;
-        public double y0 = 0;
-        public double z0 = 0;
-        public string name = "Undefined";
+        public double speed;    //current speed
+        public static double initialSpeed = 200;
+        public static double maxSpeed = 1000;
+        public Coordinate currentCoordinate;
 
-
-        public Airplane() { }
-
-
-        public Airplane(double x0, double y0)
+        public Airplane(Coordinate initialCoordinate)
         {
-            if (x0 >= 0 && y0 >= 0)
-            {
-                this.x0 = x0;
-                this.y0 = y0;
-            }
-            else Console.WriteLine("Coordinates must be positive. x, y set to 0, 0");
+            currentCoordinate = initialCoordinate;
+            speed = initialSpeed;
         }
 
-
-        public Airplane(double x0, double y0, string name)
+        public Coordinate FlyTo(Coordinate newCoordinate)
         {
-            if (x0 > 0 && y0 > 0)
+            if (newCoordinate.z <= 10)
             {
-                this.x0 = x0;
-                this.y0 = y0;
+                double distance = GetDistanceTo(newCoordinate);
+                speed += (distance / 10) * 10;    //speed increasing linear
+                if (speed > maxSpeed)
+                {
+                    speed = maxSpeed;
+                }
+                currentCoordinate = newCoordinate;
+                if (currentCoordinate.z == 0)
+                {
+                    speed = initialSpeed;   //if airplane landed (z == 0) next flyight will start from initialSpeed    
+                }
             }
-            else Console.WriteLine("Coordinates must be positive. x, y set to 0, 0");
-            if (!String.IsNullOrEmpty(name)) this.name = name;
+            else
+            {
+                Console.WriteLine("Error: Airplane can't fly above 10km");    //added restriction: max height for airplane = 10km
+            }
+            return currentCoordinate;
         }
 
-
-        public void FlyTo(double x, double y)
+        public double GetFlyTime(Coordinate newCoordinate)
         {
-            //I dont think coordinate z is needed here
-            if (x >= 0 && y >= 0)
+            /*speed increasing linear. after using this method coordinates will not be changed
+            restrictions: airplane stops for 1hr to refuel every 10 000km */
+            double distance = GetDistanceTo(newCoordinate);
+            double distanceWithAcceleration = (maxSpeed - speed) / 10 * 10;    //speed increasing on 10km/h every 10km
+            if (distance > distanceWithAcceleration)
             {
-                Console.WriteLine($"Airplane is Flying from {x0}, {y0} to {x}, {y}");
-                x0 = x;
-                y0 = y;
-                z0 = 0;
+                double timeWithAcceleration = 0;
+                if (maxSpeed != speed)   //to avoid error when airplane starts from maxSpped
+                {
+                    timeWithAcceleration = distanceWithAcceleration / ((maxSpeed - speed) / 2);
+                }
+                double distanceOnMaxSpeed = distance - distanceWithAcceleration;
+                double timeOnMaxSpeed = distanceOnMaxSpeed / maxSpeed;
+                double flyTime = timeWithAcceleration + timeOnMaxSpeed;
+                if (distance > 10000)
+                {
+                    int refuelTime = (int)distance / 10000;
+                    flyTime += refuelTime;
+                    Console.WriteLine($"Extra {refuelTime} to refuel");
+                }
+                return flyTime;
             }
-            else Console.WriteLine("Point (x,y) should be positive");
+            else
+            {
+                double maxSpeedDuringFlight = distance / 10 * 10 + speed;
+                double flyTime = distance / ((maxSpeedDuringFlight + speed) / 2);
+                return flyTime;
+            }
         }
 
-
-        public double GetFlyTime(double x, double y)
+        private double GetDistanceTo(Coordinate newCoordinate)    //calculating distance from initialCoordinate
         {
-            /*speed increasing linear (not dicret). after using this method coordinates will no be changed
-            restrictions: plane flying up to 10 000 km in one flight and stops for 1hr to refuel every 10 000km */
-            double S = Math.Sqrt(Math.Pow((x - x0), 2) + Math.Pow((y - y0), 2)); //distance in km
-            double S2 = 0;
-            double S1 = 0;
-            double speed = speed0 + S;  //maximum speed during flight km/h
-
-            if (speed > maxspeed)
-            {
-                speed = maxspeed;
-                S1 = speed - speed0;    //1st part of way with increasing of speed !!!!!!!!!!!!!
-                S2 = S - S1;    //flying on maxspeed
-            }
-
-            double time1 = S1 / ((speed0 + speed) / 2);
-            double time2 = S2 / speed;  //flying on maxspeed 
-            int refueltime = Convert.ToInt32(Math.Floor(S)) / 10000;    //time to refuel
-            //math.floor for situation if distance for example 19 999.9km - only 1 stop to refuel needed
-            double time = time1 + time2 + refueltime;   //hours
-            Console.WriteLine($"Flying to new point in {time} hours");
-            return time;
+            double distance = Math.Sqrt(Math.Pow((newCoordinate.x - currentCoordinate.x), 2) +
+                Math.Pow((newCoordinate.y - currentCoordinate.y), 2));    //km
+            return distance;
         }
 
-                
-        public double IGetHeight(double FlightTime, double CurrentTime) //time in minutes
+        public void Print()
         {
-            /*in this method time calculating in minutes
-            airplane flying from point A to point B in FlightTime minutes. Method return height (coordinate z) of 
-            airplane in {CurrentTime} minutes after starting a flight.
-            airplane flying up first 20 minutes to 10 km and flying down last 20 minutes
-            cases when airplane have no time to get maximum height (FlightTime < 40) not calculated */
-            double height = 0;
-            double zspeed = 10 / 20;    //km/min
-            switch (CurrentTime)
-            {
-                case (>0) when FlightTime < 40:
-                    {
-                        Console.WriteLine("Слишком маленькое расстояние для данного самолета");
-                        break;
-                    }
-                case (< 20):
-                    {
-                        height = zspeed * CurrentTime;
-                        break;
-                    }
-                case (> 20) when CurrentTime < (FlightTime - 20):
-                    {
-                        height = 10000;
-                        break;
-                    }
-                case (> 20) when (FlightTime - CurrentTime) < 20:
-                    {
-                        height = zspeed * (FlightTime - CurrentTime);
-                        break;
-                    }
-            }
-            if (CurrentTime >= FlightTime) Console.WriteLine("Уже прилетели. Высота = 0");
-            else Console.WriteLine($"Самолет сейчас на высоте {height} км");
-            return height;
+            Console.WriteLine($"Airplane current coordinate: {currentCoordinate.x}, {currentCoordinate.y}, " +
+                $"{currentCoordinate.z}. Current speed = {speed}");
         }
     }
 }

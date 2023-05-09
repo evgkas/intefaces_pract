@@ -1,28 +1,44 @@
-﻿/*
-Создать структуру "Координата", определяющую 3D координаты некоторого объекта (положительные числа). Определить 
-интерфейс IFlyable с методами FlyTo(новая точка), GetFlyTime(новая точка).Создать классы "Птица", "Самолет", "Дрон", 
-реализующие данный интерфейс и содержащие как миминум поле "Текущее положение".
+﻿using Intefaces_Pract;
+class Program
+{
+    static void Main(string[] args)
+    {
+        Coordinate testCoordinate = new(1500, 0, 5);
+        Coordinate zeroCoordinate = new();
+        Coordinate negativeCoordinate = new(-1, 0, 0);
+        negativeCoordinate.Print();
 
-Использовать следующие предположения: птица летит все расстояние с постоянной скоростью в диапазоне 0-20 км/ч 
-    (заданной случайно), самолет увеличивает скорость на 10 км/ч каждые 10 км полета от начальной скорости 200 км/ч., 
-    дрон зависает в воздухе каждые 10 минут полета на 1 минуту. Исходя из задачи, ввести дополнительные ограничения
-    (например, невозможность полета дрона на дальность более чем на 1000 км). Методы и введенные ограничения описать в 
-    комментариях. */
+        Console.WriteLine("Airplane:");
+        Airplane plane = new(zeroCoordinate);
+        plane.FlyTo(new(20, 0, 1));
+        Console.WriteLine(plane.speed);    //speed have to increase by 20km/h
+        Console.WriteLine($"FlyTime to {testCoordinate.ToString()} = {plane.GetFlyTime(testCoordinate)}");
+        plane.FlyTo(testCoordinate);
+        plane.Print();
+        Console.WriteLine($"FlyTime on 10500km = {plane.GetFlyTime(new(12000, 0, 0))}. Initial speed = {plane.speed}");
 
-using Intefaces_Pract;
+        Console.WriteLine("\nDrone");
+        Drone drone = new(zeroCoordinate);
+        drone.FlyTo(testCoordinate);
+        drone.Print();
+        Console.WriteLine($"{drone.GetFlyTime(new(19, 0, 0)) * 60}  {drone.GetFlyTime(new(20, 0, 0)) * 60}");
+        //9.5min to fly 19km and 11 to fly on 21km (without stops should be 10min)
+        drone.FlyTo(new(500, 0, 0));
+        drone.Print();
 
-Airplane plane = new(0, 0);
-//plane.FlyTo(1, 1, 1);
-double tm = plane.GetFlyTime(1000, 0);
-Bird eagle = new(11, 3, 0.5);
-Bird brd1 = new(0, 0, 0);
-Bird brd2 = new(0, 0, 0);
-Drone heli = new(5, 7, 13);
+        Console.WriteLine("\nBirds:");
+        Bird bird1 = new(zeroCoordinate);
+        Bird bird2 = new(zeroCoordinate);
+        Console.WriteLine($"birds speed is {bird1.speed} and {bird2.speed} km/h");
+        bird1.FlyTo(testCoordinate);
+        bird1.FlyTo(new Coordinate(20, 0, 1));
+        bird2.FlyTo(new Coordinate(7, 7, 6));
+        Console.WriteLine(bird1.GetFlyTime(zeroCoordinate));
+    }
+}
 
-Coordinate Coord_eagle = new Coordinate();
-Coordinate obj1 = new();
-Coordinate obj2 = new();
-obj1.Print(); obj2.Print();
+
+
 
 
 
