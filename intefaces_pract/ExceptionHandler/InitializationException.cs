@@ -1,4 +1,4 @@
-﻿namespace Intefaces_Pract
+﻿namespace intefaces_pract.ExceptionHandler
 {
     public class InitializationException : Exception
     {

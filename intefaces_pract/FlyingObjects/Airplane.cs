@@ -1,4 +1,6 @@
-﻿namespace Intefaces_Pract
+﻿using Intefaces_Pract;
+
+namespace intefaces_pract.FlyingObjects
 {
     public class Airplane : IFlyable
     {
@@ -18,12 +20,15 @@
             if (newCoordinate.z <= 10)
             {
                 double distance = GetDistanceTo(newCoordinate);
-                speed += (distance / 10) * 10;    //speed increasing linear
+                speed += distance / 10 * 10;    //speed increasing linear
+
                 if (speed > maxSpeed)
                 {
                     speed = maxSpeed;
                 }
+
                 currentCoordinate = newCoordinate;
+
                 if (currentCoordinate.z == 0)
                 {
                     speed = initialSpeed;   //if airplane landed (z == 0) next flyight will start from initialSpeed    
@@ -33,6 +38,7 @@
             {
                 Console.WriteLine("Error: Airplane can't fly above 10km");    //added restriction: max height for airplane = 10km
             }
+
             return currentCoordinate;
         }
 
@@ -42,22 +48,27 @@
             restrictions: airplane stops for 1hr to refuel every 10 000km */
             double distance = GetDistanceTo(newCoordinate);
             double distanceWithAcceleration = (maxSpeed - speed) / 10 * 10;    //speed increasing on 10km/h every 10km
+
             if (distance > distanceWithAcceleration)
             {
                 double timeWithAcceleration = 0;
+
                 if (maxSpeed != speed)   //to avoid error when airplane starts from maxSpped
                 {
                     timeWithAcceleration = distanceWithAcceleration / ((maxSpeed - speed) / 2);
                 }
+
                 double distanceOnMaxSpeed = distance - distanceWithAcceleration;
                 double timeOnMaxSpeed = distanceOnMaxSpeed / maxSpeed;
                 double flyTime = timeWithAcceleration + timeOnMaxSpeed;
+
                 if (distance > 10000)
                 {
                     int refuelTime = (int)distance / 10000;
                     flyTime += refuelTime;
                     Console.WriteLine($"Extra {refuelTime} to refuel");
                 }
+
                 return flyTime;
             }
             else
@@ -70,8 +81,8 @@
 
         private double GetDistanceTo(Coordinate newCoordinate)    //calculating distance from initialCoordinate
         {
-            double distance = Math.Sqrt(Math.Pow((newCoordinate.x - currentCoordinate.x), 2) +
-                Math.Pow((newCoordinate.y - currentCoordinate.y), 2));    //km
+            double distance = Math.Sqrt(Math.Pow(newCoordinate.x - currentCoordinate.x, 2) +
+                Math.Pow(newCoordinate.y - currentCoordinate.y, 2));    //km
             return distance;
         }
 

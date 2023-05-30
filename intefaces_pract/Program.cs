@@ -1,7 +1,9 @@
-﻿using Intefaces_Pract;
-class Program
+﻿using intefaces_pract.FlyingObjects;
+using Intefaces_Pract;
+
+public class Program
 {
-    static void Main(string[] args)
+    private static void Main(string[] args)
     {
         Coordinate testCoordinate = new(1500, 0, 5);
         Coordinate zeroCoordinate = new();
@@ -36,13 +38,3 @@ class Program
         Console.WriteLine(bird1.GetFlyTime(zeroCoordinate));
     }
 }
-
-
-
-
-
-
-
-
-
-

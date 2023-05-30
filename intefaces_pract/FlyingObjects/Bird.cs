@@ -1,4 +1,6 @@
-﻿namespace Intefaces_Pract
+﻿using Intefaces_Pract;
+
+namespace intefaces_pract.FlyingObjects
 {
     public class Bird : IFlyable
     {
@@ -13,7 +15,8 @@
         public Coordinate FlyTo(Coordinate newCoordinate)    //restriction added: max distance = 50, max height = 5
         {
             double distance = GetDistanceTo(newCoordinate);
-            if ((distance > 50) || (newCoordinate.z > 5))
+
+            if (distance > 50 || newCoordinate.z > 5)
             {
                 Console.WriteLine("Bird can't fly to new coordinate: distance > 50km or height > 5km");
             }
@@ -22,12 +25,14 @@
                 currentCoordinate = newCoordinate;
                 Console.WriteLine($"Bird is flying to {currentCoordinate.x}, {currentCoordinate.y}, {currentCoordinate.z}");
             }
+
             return currentCoordinate;
         }
 
         public double GetFlyTime(Coordinate newCoordinate)
         {
             double distance = GetDistanceTo(newCoordinate);
+
             if (distance > 50)
             {
                 Console.WriteLine("Error: distance > 50km");
@@ -38,13 +43,12 @@
                 double time = distance / speed;
                 return time;
             }
-
         }
 
         private double GetDistanceTo(Coordinate newCoordinate)     //calculating distance from initialCoordinate
         {
-            double distance = Math.Sqrt(Math.Pow((newCoordinate.x - currentCoordinate.x), 2) +
-                Math.Pow((newCoordinate.y - currentCoordinate.y), 2));    //km
+            double distance = Math.Sqrt(Math.Pow(newCoordinate.x - currentCoordinate.x, 2) +
+                Math.Pow(newCoordinate.y - currentCoordinate.y, 2));    //km
             return distance;
         }
 

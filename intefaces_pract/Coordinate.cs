@@ -1,11 +1,15 @@
-﻿namespace Intefaces_Pract
+﻿using intefaces_pract.ExceptionHandler;
+
+namespace Intefaces_Pract
 {
     public struct Coordinate
     {
         public double x = 0;
         public double y = 0;
         public double z = 0;
+
         public Coordinate() { }
+
         public Coordinate(double x, double y)
         {
             try
@@ -19,6 +23,7 @@
             }
             catch (InitializationException) { }
         }
+
         public Coordinate(double x, double y, double z)
         {
             try
@@ -27,6 +32,7 @@
                 {
                     throw new InitializationException("Coordinates must be positive. Coordinates set 0, 0, 0");
                 }
+
                 this.x = x;
                 this.y = y;
                 this.z = z;
